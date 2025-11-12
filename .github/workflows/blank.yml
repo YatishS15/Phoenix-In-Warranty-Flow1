@@ -1,0 +1,42 @@
+name: Postman Collection Workflow
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: 00 06 * * *
+    - cron: 00 04 * * *
+
+jobs:
+  run-postman-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    
+      - name: checkout the code
+        uses: actions/checkout@v6-beta
+
+      - name: Install Node and Npm
+        uses: actions/setup-node@v6.0.0
+        with:
+          node-version: 22
+
+      - name: Install Newman and HTMLextra globally
+        run: |
+             npm install -g newman
+             npm install -g newman-reporter-htmlextra
+
+      - name: Run Postman collection with Newman
+        run: |
+             newman run 'Rep InWarrenty-Flow Collection1.postman_collection.json' \
+             -e QA.postman_environment.json \
+             -d testdata.csv \
+             -r cli,htmlextra
+
+      
+      
+
+
+    
+
